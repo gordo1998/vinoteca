@@ -84,7 +84,33 @@ public class Manager {
 		session.save(b);
 		
 		tx.commit();
+		
+		try {
+            tx = session.beginTransaction();
+            List<Campo> c = getCampos();
+
+            for (Campo campo : c) {
+                Bodega b = campo.getBodega(); 
+                if (b != null) {
+                    List<Vid> vidsDelCampo = campo.getVids();
+                    for (Vid vid : vidsDelCampo) {
+                        b.getVids().add(vid);
+                        vid.setBodega(b);
+                        session.update(vid);
+                    }
+                }
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
 	}
+	
+	
+    private List<Campo> getCampos() {
+        return session.createQuery("FROM Campo").list();
+    }
 
 	private void addVid(String[] split) {
 		Vid v = new Vid(TipoVid.valueOf(split[1].toUpperCase()), Integer.parseInt(split[2]));

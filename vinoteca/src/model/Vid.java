@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import utils.TipoVid;
@@ -20,6 +22,9 @@ public class Vid {
 	private TipoVid vid;
 	@Column(name = "cantidad", nullable = true)
 	private int cantidad;
+	@ManyToOne
+	@JoinColumn(name = "id_bodega") 
+    private Bodega bodega;
 	
 	public Vid() {}
 		
@@ -36,8 +41,17 @@ public class Vid {
 	public int getCantidad() {
 		return cantidad;
 	}
+	
+	public Bodega getBodega() {
+		return this.bodega;	
+	}
+	
 	@Override
 	public String toString() {
 		return "Vid [vid=" + (vid.equals("0") ? "blanca" : "negra")  + ", cantidad=" + cantidad + "]";
+	}
+	
+	public void setBodega(Bodega bodega) {
+		this.bodega = bodega;
 	}
 }
